@@ -1,20 +1,41 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import api from '../api/axios'
 
 function Login() {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
 
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Login data:', formData)
-    alert('Login Coming Soon — Backend connection next!')
+    setError('')
+    setLoading(true)
+
+    try {
+      const res = await api.post('/auth/login', formData)
+
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
+
+      alert('Login successful! 🎉')
+      navigate('/')
+
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -34,6 +55,13 @@ function Login() {
         {/* Form */}
         <div className="bg-[#1a1a2e] rounded-2xl p-8 border border-white/10">
           <h2 className="text-white text-2xl font-bold mb-6">Login</h2>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-xl mb-5 text-sm">
+              ⚠️ {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
 
@@ -72,8 +100,9 @@ function Login() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#e94560] text-white py-3 rounded-xl font-semibold text-lg hover:bg-[#c73652] transition">
-              Login
+              disabled={loading}
+              className="w-full bg-[#e94560] text-white py-3 rounded-xl font-semibold text-lg hover:bg-[#c73652] transition disabled:opacity-50">
+              {loading ? 'Logging in...' : 'Login'}
             </button>
 
           </form>

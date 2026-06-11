@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Properties from './pages/Properties'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import PropertyDetail from './pages/PropertyDetail'
 import Navbar from './components/Navbar'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/properties" element={<Properties />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/properties/:id" element={<PropertyDetail />} />
         </Routes>
       </div>
     </Router>

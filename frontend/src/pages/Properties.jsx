@@ -158,8 +158,8 @@ function Properties() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((property) => (
-              <div key={property.id}
-                className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-white/10 hover:border-[#e94560]/50 transition group cursor-pointer">
+  <Link to={`/properties/${property.id}`} key={property.id}
+    className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-white/10 hover:border-[#e94560]/50 transition group cursor-pointer block">
 
                 {/* Image */}
                 <div className="relative overflow-hidden h-52">
@@ -197,7 +197,7 @@ function Properties() {
                     <span>📐 {property.area}</span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

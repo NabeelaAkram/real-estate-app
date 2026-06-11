@@ -1,7 +1,10 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import api from '../api/axios'
 
 function Register() {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -9,14 +12,33 @@ function Register() {
     role: 'user'
   })
 
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Register data:', formData)
-    alert('Register Coming Soon — Backend connection next!')
+    setError('')
+    setLoading(true)
+
+    try {
+      const res = await api.post('/auth/register', formData)
+
+      // Save token & user info in browser
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
+
+      alert('Account created successfully! 🎉')
+      navigate('/')
+
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong. Try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -36,6 +58,13 @@ function Register() {
         {/* Form */}
         <div className="bg-[#1a1a2e] rounded-2xl p-8 border border-white/10">
           <h2 className="text-white text-2xl font-bold mb-6">Register</h2>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-xl mb-5 text-sm">
+              ⚠️ {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
 
@@ -105,8 +134,9 @@ function Register() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#e94560] text-white py-3 rounded-xl font-semibold text-lg hover:bg-[#c73652] transition">
-              Create Account
+              disabled={loading}
+              className="w-full bg-[#e94560] text-white py-3 rounded-xl font-semibold text-lg hover:bg-[#c73652] transition disabled:opacity-50">
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
 
           </form>
