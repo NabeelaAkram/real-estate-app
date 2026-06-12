@@ -28,14 +28,15 @@ function Register() {
       const res = await api.post('/auth/register', formData)
 
       // Save token & user info in browser
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('user', JSON.stringify(res.data.user))
+      const { token, ...userData } = res.data
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(userData))
 
       alert('Account created successfully! 🎉')
       navigate('/')
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong. Try again.')
+      setError(err.response?.data?.error || 'Something went wrong. Try again.')
     } finally {
       setLoading(false)
     }

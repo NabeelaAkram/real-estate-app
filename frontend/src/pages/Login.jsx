@@ -25,14 +25,15 @@ function Login() {
     try {
       const res = await api.post('/auth/login', formData)
 
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('user', JSON.stringify(res.data.user))
+      const { token, ...userData } = res.data
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(userData))
 
       alert('Login successful! 🎉')
       navigate('/')
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password')
+      setError(err.response?.data?.error || 'Invalid email or password')
     } finally {
       setLoading(false)
     }

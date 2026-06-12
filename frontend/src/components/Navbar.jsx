@@ -1,8 +1,26 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    } else {
+      setUser(null)
+    }
+  }, [location])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    setUser(null)
+    navigate('/login')
+  }
 
   return (
     <nav className="bg-[#0a0a0a] border-b border-[#e94560]/20 sticky top-0 z-50">
@@ -25,12 +43,28 @@ function Navbar() {
           <Link to="/properties" className="text-gray-300 hover:text-[#e94560] transition font-medium">
             Properties
           </Link>
-          <Link to="/login" className="text-gray-300 hover:text-[#e94560] transition font-medium">
-            Login
-          </Link>
-          <Link to="/register" className="bg-[#e94560] text-white px-6 py-2 rounded-full hover:bg-[#c73652] transition font-medium">
-            Register
-          </Link>
+
+          {user ? (
+            <>
+              <span className="text-gray-300 font-medium">
+                👋 Welcome, <span className="text-[#e94560]">{user.name}</span>
+              </span>
+              <button
+                onClick={handleLogout}
+                className="bg-[#1a1a2e] border border-white/10 text-white px-6 py-2 rounded-full hover:border-[#e94560] transition font-medium">
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="text-gray-300 hover:text-[#e94560] transition font-medium">
+                Login
+              </Link>
+              <Link to="/register" className="bg-[#e94560] text-white px-6 py-2 rounded-full hover:bg-[#c73652] transition font-medium">
+                Register
+              </Link>
+            </>
+          )}
         </div>
 
       </div>
