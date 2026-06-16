@@ -7,11 +7,17 @@ function Navbar() {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
-    } else {
+    try {
+      const storedUser = localStorage.getItem('user')
+      if (storedUser && storedUser !== 'undefined') {
+        setUser(JSON.parse(storedUser))
+      } else {
+        setUser(null)
+        localStorage.removeItem('user')
+      }
+    } catch (e) {
       setUser(null)
+      localStorage.removeItem('user')
     }
   }, [location])
 
@@ -46,6 +52,11 @@ function Navbar() {
 
           {user ? (
             <>
+              {user.role === 'agent' && (
+                <Link to="/add-property" className="bg-[#e94560] text-white px-6 py-2 rounded-full hover:bg-[#c73652] transition font-medium">
+                  + Add Property
+                </Link>
+              )}
               <span className="text-gray-300 font-medium">
                 👋 Welcome, <span className="text-[#e94560]">{user.name}</span>
               </span>

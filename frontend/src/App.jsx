@@ -4,6 +4,8 @@ import Properties from './pages/Properties'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import PropertyDetail from './pages/PropertyDetail'
+import AddProperty from './pages/AddProperty'
+import EditProperty from './pages/EditProperty'
 import Navbar from './components/Navbar'
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
+          <Route path="/add-property" element={<AddProperty />} />
+          <Route path="/edit-property/:id" element={<EditProperty />} />
         </Routes>
       </div>
     </Router>

@@ -1,220 +1,189 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-
-const properties = [
-  {
-    id: 1,
-    title: "Luxury Villa in Palm Jumeirah",
-    price: "AED 5,500,000",
-    location: "Palm Jumeirah, Dubai",
-    beds: 5,
-    baths: 6,
-    area: "8,500 sqft",
-    type: "Villa",
-    purpose: "Sale",
-    image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=500"
-  },
-  {
-    id: 2,
-    title: "Modern Apartment in Downtown",
-    price: "AED 120,000/year",
-    location: "Downtown Dubai",
-    beds: 2,
-    baths: 2,
-    area: "1,200 sqft",
-    type: "Apartment",
-    purpose: "Rent",
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500"
-  },
-  {
-    id: 3,
-    title: "Stunning Sea View Apartment",
-    price: "AED 2,800,000",
-    location: "Dubai Marina",
-    beds: 3,
-    baths: 3,
-    area: "2,100 sqft",
-    type: "Apartment",
-    purpose: "Sale",
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500"
-  }
-]
+import api from '../api/axios'
 
 function Home() {
+  const [featured, setFeatured] = useState([])
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await api.get('/properties')
+        setFeatured(res.data.slice(0, 3))
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchFeatured()
+  }, [])
+
   return (
-    <div className="bg-[#0f0f0f] min-h-screen text-white">
+    <div className="bg-[#0f0f0f] text-white">
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#0f3460] py-32 px-6 text-center overflow-hidden">
+      <div className="relative min-h-[600px] flex items-center justify-center"
+        style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%)' }}>
 
-        {/* Background circles */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-[#e94560]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#0f3460]/50 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #e94560 0%, transparent 50%), radial-gradient(circle at 80% 50%, #e94560 0%, transparent 50%)' }} />
 
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <span className="bg-[#e94560]/20 text-[#e94560] px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block">
-            #1 Real Estate Platform in UAE
-          </span>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        <div className="relative text-center px-6 max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">
             Find Your Dream
-            <span className="text-[#e94560]"> Property </span>
-            in UAE
+            <span className="text-[#e94560]"> Home in UAE</span>
           </h1>
-          <p className="text-xl text-gray-400 mb-10">
-            Discover thousands of premium properties for sale and rent across Dubai, Abu Dhabi and UAE
+          <p className="text-gray-400 text-xl mb-10">
+            Discover premium properties across Dubai, Abu Dhabi and beyond
           </p>
 
-          {/* Search Box */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 flex flex-wrap gap-3 max-w-3xl mx-auto border border-white/20">
+          {/* Search Bar */}
+          <div className="flex gap-3 max-w-2xl mx-auto">
             <input
               type="text"
-              placeholder="🔍 Search by city, area or property..."
-              className="flex-1 bg-transparent text-white placeholder-gray-400 px-4 py-3 outline-none text-lg min-w-[200px]"
+              placeholder="Search by city or property type..."
+              className="flex-1 bg-[#1a1a2e] text-white px-6 py-4 rounded-2xl border border-white/10 outline-none focus:border-[#e94560] transition text-lg placeholder-gray-500"
             />
-            <select className="bg-white/20 text-white px-4 py-3 rounded-xl outline-none">
-              <option value="">For Sale</option>
-              <option value="rent">For Rent</option>
-            </select>
-            <button className="bg-[#e94560] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#c73652] transition text-lg">
+            <Link to="/properties"
+              className="bg-[#e94560] text-white px-8 py-4 rounded-2xl font-semibold hover:bg-[#c73652] transition text-lg">
               Search
-            </button>
+            </Link>
           </div>
+        </div>
+      </div>
 
-          {/* Stats */}
-          <div className="flex justify-center gap-12 mt-16 flex-wrap">
-            {[
-              { number: '500+', label: 'Properties' },
-              { number: '200+', label: 'Happy Clients' },
-              { number: '50+', label: 'Expert Agents' },
-              { number: '15+', label: 'UAE Cities' }
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-4xl font-bold text-[#e94560]">{stat.number}</div>
-                <div className="text-gray-400 mt-1">{stat.label}</div>
-              </div>
-            ))}
+      {/* Stats */}
+      <div className="bg-[#1a1a2e] py-12 border-y border-white/10">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div className="text-4xl font-bold text-[#e94560]">500+</div>
+            <div className="text-gray-400 mt-2">Properties Listed</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-[#e94560]">200+</div>
+            <div className="text-gray-400 mt-2">Happy Clients</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-[#e94560]">50+</div>
+            <div className="text-gray-400 mt-2">Expert Agents</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-[#e94560]">15+</div>
+            <div className="text-gray-400 mt-2">Cities Covered</div>
           </div>
         </div>
       </div>
 
       {/* Property Types */}
-      <div className="py-20 px-6 bg-[#111111]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">
-            Browse by <span className="text-[#e94560]">Property Type</span>
+      <div className="max-w-6xl mx-auto px-6 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4">
+            Browse by <span className="text-[#e94560]">Type</span>
           </h2>
-          <p className="text-gray-400 text-center mb-12">Find the perfect property that suits your needs</p>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { icon: '🏢', label: 'Apartment', count: '120+' },
-              { icon: '🏡', label: 'Villa', count: '85+' },
-              { icon: '🏬', label: 'Office', count: '60+' },
-              { icon: '🏪', label: 'Shop', count: '45+' },
-              { icon: '🌍', label: 'Land', count: '30+' }
-            ].map((type) => (
-              <div key={type.label}
-                className="bg-[#1a1a2e] border border-white/10 rounded-2xl p-6 text-center cursor-pointer hover:border-[#e94560] hover:bg-[#e94560]/10 transition group">
-                <div className="text-4xl mb-3">{type.icon}</div>
-                <div className="font-semibold text-white group-hover:text-[#e94560] transition">{type.label}</div>
-                <div className="text-gray-400 text-sm mt-1">{type.count} listings</div>
+          <p className="text-gray-400">Find exactly what you're looking for</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[
+            { type: 'apartment', icon: '🏢', label: 'Apartment' },
+            { type: 'villa', icon: '🏡', label: 'Villa' },
+            { type: 'office', icon: '🏬', label: 'Office' },
+            { type: 'shop', icon: '🏪', label: 'Shop' },
+            { type: 'land', icon: '🌍', label: 'Land' }
+          ].map(item => (
+            <Link
+              key={item.type}
+              to={`/properties?type=${item.type}`}
+              className="bg-[#1a1a2e] rounded-2xl p-6 text-center border border-white/10 hover:border-[#e94560] transition group">
+              <div className="text-4xl mb-3">{item.icon}</div>
+              <div className="font-semibold group-hover:text-[#e94560] transition">
+                {item.label}
               </div>
-            ))}
-          </div>
+            </Link>
+          ))}
         </div>
       </div>
 
       {/* Featured Properties */}
-      <div className="py-20 px-6 bg-[#0f0f0f]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">
-            Featured <span className="text-[#e94560]">Properties</span>
-          </h2>
-          <p className="text-gray-400 text-center mb-12">Handpicked premium properties just for you</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {properties.map((property) => (
-              <div key={property.id}
-                className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-white/10 hover:border-[#e94560]/50 transition group cursor-pointer">
-
-                {/* Image */}
-                <div className="relative overflow-hidden h-52">
-                  <img
-                    src={property.image}
-                    alt={property.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                  />
-                  <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-semibold ${
-                    property.purpose === 'Sale'
-                      ? 'bg-[#e94560] text-white'
-                      : 'bg-green-500 text-white'
-                  }`}>
-                    For {property.purpose}
-                  </span>
-                </div>
-
-                {/* Details */}
-                <div className="p-6">
-                  <div className="text-[#e94560] font-bold text-xl mb-2">{property.price}</div>
-                  <h3 className="text-white font-semibold text-lg mb-2">{property.title}</h3>
-                  <p className="text-gray-400 text-sm mb-4">📍 {property.location}</p>
-
-                  <div className="flex gap-4 text-gray-400 text-sm border-t border-white/10 pt-4">
-                    <span>🛏 {property.beds} Beds</span>
-                    <span>🚿 {property.baths} Baths</span>
-                    <span>📐 {property.area}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
+      <div className="bg-[#0a0a0a] py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">
+              Featured <span className="text-[#e94560]">Properties</span>
+            </h2>
+            <p className="text-gray-400">Latest listings from our agents</p>
           </div>
 
-          <div className="text-center mt-12">
+          {featured.length === 0 ? (
+            <div className="text-center py-10">
+              <p className="text-gray-400">No properties listed yet.</p>
+              <Link to="/register"
+                className="text-[#e94560] hover:underline mt-2 inline-block">
+                Register as an agent to add listings →
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {featured.map(property => (
+                <Link
+                  key={property._id}
+                  to={`/properties/${property._id}`}
+                  className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-white/10 hover:border-[#e94560]/50 transition group block">
+                  <div className="relative h-52 overflow-hidden">
+                    <img
+                      src={property.images[0] || 'https://via.placeholder.com/500x300/1a1a2e/e94560?text=No+Image'}
+                      alt={property.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                    />
+                    <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-semibold capitalize ${
+                      property.purpose === 'sale'
+                        ? 'bg-[#e94560] text-white'
+                        : 'bg-green-500 text-white'
+                    }`}>
+                      For {property.purpose}
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <div className="text-[#e94560] font-bold text-xl mb-2">
+                      AED {property.price.toLocaleString('en-US')}
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">{property.title}</h3>
+                    <p className="text-gray-400 text-sm mb-4">
+                      📍 {property.location.city}, {property.location.address}
+                    </p>
+                    <div className="flex gap-4 text-gray-400 text-sm border-t border-white/10 pt-4">
+                      {property.features.bedrooms > 0 &&
+                        <span>🛏 {property.features.bedrooms} Beds</span>}
+                      <span>🚿 {property.features.bathrooms} Baths</span>
+                      <span>📐 {property.features.area} sqft</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="text-center mt-10">
             <Link to="/properties"
-              className="bg-[#e94560] text-white px-10 py-4 rounded-xl font-semibold hover:bg-[#c73652] transition text-lg inline-block">
+              className="bg-[#e94560] text-white px-10 py-4 rounded-2xl font-semibold hover:bg-[#c73652] transition text-lg">
               View All Properties →
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Why Choose Us */}
-      <div className="py-20 px-6 bg-[#111111]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">
-            Why Choose <span className="text-[#e94560]">UAE Properties</span>
+      {/* CTA */}
+      <div className="bg-[#1a1a2e] py-20 text-center border-t border-white/10">
+        <div className="max-w-2xl mx-auto px-6">
+          <h2 className="text-4xl font-bold mb-4">
+            Are You a Real Estate <span className="text-[#e94560]">Agent?</span>
           </h2>
-          <p className="text-gray-400 text-center mb-12">We make property search simple and trusted</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: '🔍', title: 'Smart Search', desc: 'Find properties using AI powered search and filters' },
-              { icon: '✅', title: 'Verified Listings', desc: 'All properties are verified by our expert team' },
-              { icon: '🤝', title: 'Trusted Agents', desc: 'Connect with certified real estate agents in UAE' }
-            ].map((feature) => (
-              <div key={feature.title}
-                className="bg-[#1a1a2e] rounded-2xl p-8 text-center border border-white/10 hover:border-[#e94560]/50 transition">
-                <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
-                <p className="text-gray-400">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
+          <p className="text-gray-400 mb-8">
+            List your properties and reach thousands of buyers across UAE
+          </p>
+          <Link to="/register"
+            className="bg-[#e94560] text-white px-10 py-4 rounded-2xl font-semibold hover:bg-[#c73652] transition text-lg">
+            Register as Agent →
+          </Link>
         </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="py-20 px-6 bg-gradient-to-r from-[#e94560] to-[#c73652] text-center">
-        <h2 className="text-4xl font-bold mb-4">Are You a Real Estate Agent?</h2>
-        <p className="text-xl mb-8 text-white/80">List your properties and reach thousands of buyers across UAE</p>
-        <Link to="/register"
-          className="bg-white text-[#e94560] px-10 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition inline-block">
-          Register as Agent →
-        </Link>
-      </div>
-
-      {/* Footer */}
-      <div className="bg-[#0a0a0a] text-center py-8 text-gray-500 border-t border-white/10">
-        <p>© 2026 UAE Properties. Built with MERN Stack 🏠</p>
       </div>
 
     </div>

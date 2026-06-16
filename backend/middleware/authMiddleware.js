@@ -21,4 +21,11 @@ const protect = async (req, res, next) => {
   }
 }
 
-module.exports = { protect }
+const agentOnly = (req, res, next) => {
+  if (req.user.role !== 'agent' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Only agents can do this' })
+  }
+  next()
+}
+
+module.exports = { protect, agentOnly }
