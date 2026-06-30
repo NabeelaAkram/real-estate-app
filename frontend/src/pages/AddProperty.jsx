@@ -23,6 +23,7 @@ function AddProperty() {
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [generating, setGenerating] = useState(false)
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -30,6 +31,25 @@ function AddProperty() {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     })
+  }
+
+  const handleGenerateDescription = async () => {
+    setGenerating(true)
+    try {
+      const res = await api.post('/ai/generate-description', {
+        propertyType: formData.type,
+        location: `${formData.address}, ${formData.city}`,
+        bedrooms: formData.bedrooms,
+        area: formData.area,
+        price: formData.price,
+      })
+      setFormData({ ...formData, description: res.data.description })
+    } catch (err) {
+      console.error(err)
+      alert('Failed to generate description. Try again.')
+    } finally {
+      setGenerating(false)
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -107,7 +127,17 @@ function AddProperty() {
 
           {/* Description */}
           <div>
-            <label className="text-gray-400 text-sm mb-2 block">Description</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-gray-400 text-sm block">Description</label>
+              <button
+                type="button"
+                onClick={handleGenerateDescription}
+                disabled={generating}
+                className="text-xs bg-[#e94560]/20 text-[#e94560] px-3 py-1.5 rounded-lg hover:bg-[#e94560]/30 transition disabled:opacity-50"
+              >
+                {generating ? 'Generating...' : '✨ Generate with AI'}
+              </button>
+            </div>
             <textarea
               name="description"
               value={formData.description}
